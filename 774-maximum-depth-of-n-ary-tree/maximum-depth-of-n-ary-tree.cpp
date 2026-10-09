@@ -23,7 +23,7 @@ public:
     int maxDepth(Node* root) {
         if(root == nullptr) return 0;
         int maxHeight = 0;
-        for(Node* node : root->children){
+        for(auto node : root->children){
             maxHeight = max(maxHeight, maxDepth(node));
         }
         return 1 + maxHeight;
