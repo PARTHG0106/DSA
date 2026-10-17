@@ -1,41 +1,27 @@
 class Solution {
 public:
-    int sumDigits(int n){
-        int ans = 0;
-        while(n){
-            ans += n % 10;
-            n /= 10;
-        }
-        return ans;
-    }
     int minSwaps(vector<int>& nums) {
-        vector<int> og = nums;
-        unordered_map<int, int> uno_mp;
-        for(int x : nums) uno_mp[x] = sumDigits(x);
-        sort(begin(nums), end(nums), [&uno_mp](const auto &a, const auto &b){ 
-            if(uno_mp[a] != uno_mp[b]) return uno_mp[a] < uno_mp[b];
-            return a < b;
-        });
+        auto digit_sum = [](int x) {
+            int s = 0;
+            for (; x > 0; x /= 10) s += x % 10;
+            return s;
+        };
+        int n = nums.size();
+        vector<pair<int, int>> keyed;  // (digit sum, value)
+        for (int x : nums) keyed.emplace_back(digit_sum(x), x);
+        ranges::sort(keyed);
+        unordered_map<int, int> rank;  // final position of each value
+        for (int k = 0; k < n; k++) rank[keyed[k].second] = k;
+        vector<int> home;  // where the value at each position must go
+        for (int x : nums) home.push_back(rank[x]);
 
-        unordered_map<int, int> pos;
-        for (int i = 0; i < nums.size(); i++)
-            pos[nums[i]] = i;
-        
-        int n = nums.size(), swaps = 0;
-        vector<bool> vis(n, false);
-
+        int swaps = 0;
         for (int i = 0; i < n; i++) {
-            if (vis[i]) continue;
-
-            int j = i, cycle = 0;
-
-            while (!vis[j]) {
-                vis[j] = true;
-                j = pos[og[j]];
-                cycle++;
+            while (home[i] != i) {  // send the value at i home, take that spot's value in exchange
+                int j = home[i];
+                swap(home[i], home[j]);
+                swaps++;
             }
-
-            swaps += cycle - 1;
         }
         return swaps;
     }
