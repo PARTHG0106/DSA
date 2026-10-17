@@ -1,26 +1,7 @@
-constexpr int N=1e5;
-int Rt[N], Rk[N];
-struct UnionFind{
-    int comp;
-    UnionFind(int n): comp(n){
-        iota(Rt, Rt+n, 0);
-        memset(Rk, 0, n*sizeof(int));
-    }
-    int Find(int x){
-        return (x==Rt[x])? x : Rt[x]=Find(Rt[x]);
-    }
-    bool Union(int x, int y){
-        x=Find(x), y=Find(y);
-        if (x==y) return 0;
-        if (Rk[x]>Rk[y]) swap(x, y);
-        Rt[x]=y;
-        Rk[y]+=(Rk[x]==Rk[y]);
-        comp--;
-        return 1;
-    }
-
-};
-uint64_t A[N];
+constexpr int dN=83, M=1e5;
+uint64_t A[M], A2[M];
+uint8_t viz[M];
+int DS[dN];
 class Solution {
 public:
     static inline int digitSum(int x){
@@ -34,18 +15,35 @@ public:
         return ((uint64_t)ds<<47ULL)+((uint64_t)x<<17ULL)+i ;
     }
     static int minSwaps(vector<int>& nums) {
-        const int n=nums.size(), mask=(1<<17)-1;
+        const int n=nums.size();
+        memset(DS, 0, sizeof(DS));
         for (int i=0; i<n; i++){
-            int x=nums[i];
-            A[i]=pack(digitSum(x), x, i);
+            const int x=nums[i], ds=digitSum(x);
+            A[i]=pack(ds, x, i);
+            DS[ds]++;
         }
-        sort(A, A+n);
-        UnionFind G(n);
+        partial_sum(DS, DS+83, DS);
         for(int i=0; i<n; i++){
-            int j=A[i] & mask;
-            G.Union(i, j);
+            const auto info=A[i];
+            const int ds=info>>47;
+            int idx=--DS[ds];
+            A2[idx]=info;
         }
-        return n-G.comp;
+        for(int ds=1; ds<=81; ds++){
+            sort(A2+DS[ds], A2+DS[ds+1]);
+        }
+        memset(viz, 0, n);
+        int cnt=0, mask=(1<<17)-1;
+        for(int i=0; i<n; i++){
+            if (viz[i] || (A2[i]&mask)==i) continue;
+            int cycle=0;
+            for(int j=i; !viz[j]; j=A2[j]&mask){
+                cycle++;
+                viz[j]=1;
+            }
+            cnt+=(cycle-1);
+        }
+        return cnt;
     }
 };
 auto init = []()
