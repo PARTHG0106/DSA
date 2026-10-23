@@ -1,12 +1,12 @@
 class Solution {
 public:
-    int sortPermutation(vector<int>& nums) {
-        int k = -1;  // all bits set: nothing misplaced yet
-        for (int i = 0; i < nums.size(); i++)
-            if (nums[i] != i) {  // this number has to move
-                k &= nums[i];  // keep only the bits it shares
-                if (k == 0) return 0;  // bits only disappear, so 0 stays 0
-            }
-        return max(k, 0);  // -1 means nothing has to move
+    static int sortPermutation(vector<int>& nums) {
+        const unsigned n=nums.size();
+        int k0=bit_ceil(n)-1, k=k0;// all bits are set
+        for(int i=0; i<n; i++){
+            const int x=nums[i];
+            k&=(-(x!=i)& x)+(-(x==i));
+        }
+        return k==k0?0:k;
     }
 };
