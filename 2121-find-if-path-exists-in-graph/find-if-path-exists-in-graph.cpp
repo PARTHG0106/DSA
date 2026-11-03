@@ -1,43 +1,32 @@
 class Solution {
 public:
-    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
-        unordered_map<int, vector<int>> graph;
-        for (const auto& edge : edges) {
-            int u = edge[0];
-            int v = edge[1];
-            graph[u].push_back(v);
-            graph[v].push_back(u);
+    bool validPath(int n, vector<vector<int>>& edges, int start, int end) {
+        vector<vector<int>> graph(n);
+        // Build the graph
+        for(int i=0; i<edges.size(); i++) {
+            graph[edges[i][0]].push_back(edges[i][1]);
+            graph[edges[i][1]].push_back(edges[i][0]);
         }
         
-        vector<int> distances(n, numeric_limits<int>::max());
-        distances[source] = 0;
-        
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> priorityQueue;
-        priorityQueue.push({0, source});
-        
-        while (!priorityQueue.empty()) {
-            auto current = priorityQueue.top();
-            priorityQueue.pop();
-            int currentDistance = current.first;
-            int currentNode = current.second;
-            
-            if (currentNode == destination) {
+        // BFS
+        queue<int> q;
+        vector<int> visited(n, 0);
+        q.push(start);
+        visited[start] = 1;
+        while(!q.empty()){
+            int top = q.front();
+            q.pop();
+            if(top == end)
                 return true;
-            }
-            
-            if (currentDistance > distances[currentNode]) {
-                continue;
-            }
-            
-            for (int neighbor : graph[currentNode]) {
-                int distance = currentDistance + 1; // Assuming unweighted graph
-                if (distance < distances[neighbor]) {
-                    distances[neighbor] = distance;
-                    priorityQueue.push({distance, neighbor});
+
+            for(int i=0; i<graph[top].size(); i++){
+                if(visited[graph[top][i]] == 0){
+                    q.push(graph[top][i]);
+                    visited[graph[top][i]] = 1;
                 }
             }
         }
-        
         return false;
     }
 };
+
