@@ -8,7 +8,7 @@ public:
             adj[x[1]].push_back(x[0]);
         }
         queue<int> q;
-        vector<int> vis(n + 1, 0);
+        vector<bool> vis(n + 1, 0);
         q.push(source);
         vis[source] = 1;
         while(!q.empty()){
