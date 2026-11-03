@@ -1,46 +1,33 @@
-class DSU {
-    vector<int> parent, rank;
-public:
-    DSU(int n){
-        parent.resize(n);
-        rank.resize(n);
-        iota(parent.begin(), parent.end(), 0);
-    }
-    
-    int find(int x){
-        if(x !=parent[x])
-            parent[x] = find(parent[x]);
-        return parent[x];
-    }
-    
-    bool Union(int x, int y){
-        int xp = find(x);
-        int yp = find(y);
-        
-        if(xp == yp)
-            return true;
-        else {
-            if(rank[xp] > rank[yp])
-                parent[yp] = xp;
-            else if (rank[xp] < rank[yp])
-                parent[xp] = yp;
-            else {
-                parent[yp] = xp;
-                rank[xp]++;
-            }
-            return false;
-        }
-    }
-    
-};
-
 class Solution {
 public:
-    bool validPath(int n, vector<vector<int>>& edges, int start, int end) {
-        DSU uf(n);
-        for(int i=0; i<edges.size(); i++) {
-            uf.Union(edges[i][0], edges[i][1]);
+    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        vector<vector<int>> adj(n);
+
+        for(auto& e : edges) {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
         }
-        return uf.Union(start, end);
+
+        vector<bool> vis(n, false);
+        stack<int> st;
+
+        st.push(source);
+        vis[source] = true;
+
+        while(!st.empty()) {
+            int node = st.top();
+            st.pop();
+
+            if(node == destination) return true;
+
+            for(int x : adj[node]) {
+                if(!vis[x]) {
+                    vis[x] = true;
+                    st.push(x);
+                }
+            }
+        }
+
+        return false;
     }
 };
