@@ -1,22 +1,22 @@
 class Solution {
 public:
-    void traverse(int n, int node, vector<int>& vis, vector<vector<int>>& isConnected){
-        for(int i = 1; i < n + 1; i++){
-            if(isConnected[node - 1][i - 1] == 1 && vis[i] == 0){
-                vis[i] = 1;
-                traverse(n, i, vis, isConnected);
-            }
+    void dfs(int n, int i, vector<int> &visited, vector<vector<int>> &isConnected){
+        if(visited[i]) return;
+        visited[i] = 1;
+        for(int j = 0; j < n; j++){
+            if(isConnected[i][j] == 1) dfs(n, j, visited, isConnected);
         }
     }
+
     int findCircleNum(vector<vector<int>>& isConnected) {
-        int n = isConnected.size(), province = 0;
-        vector<int> vis(n + 1, 0);
-        for(int i = 1; i < n + 1; i++){
-            if(!vis[i]){
-                province++;
-                traverse(n, i, vis, isConnected);
+        int n = isConnected.size(), provinces = 0;
+        vector<int> visited(n, 0);
+        for(int i = 0; i < n; i++){
+            if(!visited[i]){
+                provinces++;
+                dfs(n, i, visited, isConnected);
             }
         }
-        return province;
+        return provinces;
     }
 };
