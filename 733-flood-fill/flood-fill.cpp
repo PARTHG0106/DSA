@@ -2,10 +2,9 @@ class Solution {
 public:
     vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
         if(image.empty()) return image;
-        int ini = image[sr][sc], m = image.size(), n = image[0].size(), i = sr, j = sc;
+        int ini = image[sr][sc], m = image.size(), n = image[0].size();
         if(ini == color) return image;
         image[sr][sc] = color;
-        // colorFill(ini, m, n, sr, sc, image, color);
         queue<pair<int, int>> q;
         q.push({sr, sc});
         while(!q.empty()){
