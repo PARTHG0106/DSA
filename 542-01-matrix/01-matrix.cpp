@@ -2,14 +2,13 @@ class Solution {
 public:
     vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
         int m = mat.size(), n = mat[0].size();
-        vector<vector<int>> ans(m, vector<int>(n, 0));
+        vector<vector<int>> ans(m, vector<int>(n, -1));
         queue<pair<int, int>> q;
-        vector<vector<int>> vis(m, vector<int>(n, 0));
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (mat[i][j] == 0) {
                     q.push({i, j});
-                    vis[i][j] = 1;
+                    ans[i][j] = 0;
                 }
             }
         }
@@ -22,8 +21,7 @@ public:
                 q.pop();
                 for(int it = 0; it < 4; it++){
                     int nrow = i + delRow[it], ncol = j + delCol[it];
-                    if (nrow < 0 || ncol < 0 || nrow >= m || ncol >= n || vis[nrow][ncol]) continue;
-                    vis[nrow][ncol] = 1;
+                    if (nrow < 0 || ncol < 0 || nrow >= m || ncol >= n || ans[nrow][ncol] != -1) continue;
                     ans[nrow][ncol] = dist;
                     q.push({nrow, ncol});
                 }
