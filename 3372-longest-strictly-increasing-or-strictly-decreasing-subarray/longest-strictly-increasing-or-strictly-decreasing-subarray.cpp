@@ -1,36 +1,24 @@
 class Solution {
 public:
     int longestMonotonicSubarray(vector<int>& nums) {
-        int n = nums.size();
-        if(n == 1) return 1;
-        int longLen = 1, i = 0, j = 1, ans = 0;
-        cout << "Increasing:\n";
-        while (j < n && i < j) {
-            if (nums[i] < nums[j]) {
-                cout << longLen << " ";
-                longLen++;
-            } else {
-                ans = max(ans, longLen);
-                longLen = 1;
+        int n = nums.size(), inc = 1, dec = 1, ans = 1;
+
+        for(int i = 1; i < n; i++) {
+            if(nums[i] > nums[i-1]) {
+                inc++;
+                dec = 1;
             }
-            ans = max(ans, longLen);
-            i++;
-            j++;
-        }
-        cout << "Decreasing:\n";
-        i = 0, j = 1, longLen = 1;
-        while (j < n && i < j) {
-            if (nums[i] > nums[j]) {
-                cout << longLen << " ";
-                longLen++;
-            } else {
-                ans = max(ans, longLen);
-                longLen = 1;
+            else if(nums[i] < nums[i-1]) {
+                dec++;
+                inc = 1;
             }
-            ans = max(ans, longLen);
-            i++;
-            j++;
+            else {
+                inc = dec = 1;
+            }
+
+            ans = max({ans, inc, dec});
         }
+
         return ans;
     }
 };
