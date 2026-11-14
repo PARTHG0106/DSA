@@ -8,6 +8,7 @@ public:
             for (int j = i; j < n; j++) {
                 sum += nums[j];
                 int len = j - i + 1;
+                if(len > r) break;
                 if (len >= l && len <= r && sum > 0) {
                     ans = min(ans, sum);
                 }
